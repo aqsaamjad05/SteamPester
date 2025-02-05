@@ -46,7 +46,9 @@ make sure you have the following installed on your system:
    FRIEND_STEAM_PROFILE="https://steamcommunity.com/id/yourfriendsprofile"
    ```
 
-5. run the script:
+5. modify the `comment_text` variable in `steampester.py` (line 89) to your liking  
+
+6. run the script:
 
    ```sh
    python steampester.py
