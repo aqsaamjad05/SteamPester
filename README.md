@@ -1,4 +1,4 @@
-# steam comment bot
+# SteamPester
 
 a Python script that automatically comments on a friend's Steam profile daily; this script uses Selenium for web automation and maintains a day count for tracking repeated comments.
 
@@ -21,8 +21,8 @@ make sure you have the following installed on your system:
 1. clone the repository:
 
    ```sh
-   git clone https://github.com/yourusername/steam-comment-bot.git
-   cd steam-comment-bot
+   git clone https://github.com/aqsaamjad05/SteamPester.git
+   cd SteamPester
    ```
 
 2. create a virtual environment (optional but recommended):
@@ -49,7 +49,7 @@ make sure you have the following installed on your system:
 5. run the script:
 
    ```sh
-   python steam_comment_bot.py
+   python steampester.py
    ```
 
 ## how it works
@@ -59,7 +59,7 @@ make sure you have the following installed on your system:
 - each time the script runs, it increments the day count and posts a comment like:
 
   ```
-  day X of asking sirnyges to hop on val :steambored: - commentBot <3
+  day X of asking sirnyges to hop on val :steambored: - SteamPester <3
   ```
 
 - the comment section and post button are located using XPath and CSS selectors.

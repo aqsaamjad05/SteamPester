@@ -50,7 +50,7 @@ def login(driver):
         EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
     )
     login_button.click()
-    time.sleep(15)
+    time.sleep(10)
     print("successfully logged in")
 
 def post_comment(driver, comment_text):
@@ -73,7 +73,7 @@ def post_comment(driver, comment_text):
         comment_input.send_keys(comment_text)
 
         # find and click the post button
-        post_button = WebDriverWait(driver, 10).until(
+        post_button = WebDriverWait(driver, 5).until(
             EC.element_to_be_clickable((By.ID, "commentthread_Profile_76561198341399194_submit"))
         )
         post_button.click()
@@ -86,12 +86,12 @@ def post_comment(driver, comment_text):
 
 def main(): 
     day_count = get_day_count() # get and increment the day count
-    comment_text = f'day {day_count} of asking sirnyges to hop on val :steambored: - commentBot <3' # format comment
+    comment_text = f'day {day_count} of asking sirnyges to hop on val :steambored: — SteamPester <3' # format comment
    
     login(driver)
     post_comment(driver, comment_text)
 
-    time.sleep(10)
+    time.sleep(5)
     driver.quit()
 
 if __name__ == "__main__":
