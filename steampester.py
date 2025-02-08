@@ -5,11 +5,13 @@ from dotenv import load_dotenv
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
 load_dotenv()
 STEAM_USERNAME = os.getenv('STEAM_USERNAME')
 STEAM_PASSWORD = os.getenv('STEAM_PASSWORD')
 FRIEND_STEAM_PROFILE = os.getenv('FRIEND_STEAM_PROFILE')
+FRIEND_STEAM_ID = os.getenv('FRIEND_STEAM_ID')
 DAY_COUNT_FILE = "day_count.txt"
 
 url_login = "https://steamcommunity.com/login/home/"
@@ -54,8 +56,6 @@ def login(driver):
     print("successfully logged in")
 
 def post_comment(driver, comment_text):
-    # navigate to friend's profile
-    driver.get(FRIEND_STEAM_PROFILE)
 
     # wait for the comment section to be visible
     try:
@@ -74,8 +74,9 @@ def post_comment(driver, comment_text):
 
         # find and click the post button
         post_button = WebDriverWait(driver, 5).until(
-            EC.element_to_be_clickable((By.ID, "commentthread_Profile_76561198341399194_submit"))
+            EC.visibility_of_element_located((By.ID, f"commentthread_Profile_{FRIEND_STEAM_ID}_submit"))
         )
+
         post_button.click()
 
         print(f"Successfully posted the comment: {comment_text}")
@@ -84,13 +85,73 @@ def post_comment(driver, comment_text):
         print(f"Error posting comment: {str(e)}")
 
 
+def delete_previous_comment(driver):
+    try:
+        print("SteamPester is searching for previous comments...")
+
+        # wait for comments to load
+        comments = WebDriverWait(driver, 15).until(
+            EC.presence_of_all_elements_located((By.CLASS_NAME, "commentthread_comment"))
+        )
+        # print number of comments to be found
+        print(f"Found {len(comments)} comments.")
+
+        for comment in comments:
+            try:
+                # get the author name
+                author_element = WebDriverWait(comment, 5).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, "commentthread_author_link"))
+                )
+                author_name = author_element.text.strip()
+
+                # if i am the author of the comment...
+                if author_name == STEAM_USERNAME:
+                    print("SteamPester found your previous comment! Attempting to delete...")
+
+                    # hover over the comment to reveal the delete button
+                    ActionChains(driver).move_to_element(comment).perform()
+                    time.sleep(2)  # wait for UI to update
+
+                    # find the delete button
+                    try:
+                        delete_button = WebDriverWait(comment, 5).until(
+                            EC.element_to_be_clickable(
+                                (By.XPATH, ".//div[@class='commentthread_comment_actions']/a")
+                            )
+                        )
+                    except Exception as e:
+                        print(f"Error finding delete button: {e}")
+                        continue
+
+                    # click the delete button
+                    delete_button.click()
+                    print("SteamPester successfully deleted your previous comment!")
+
+                    time.sleep(3)  # allow time for deletion to reflect
+
+                    return  # exit after deleting the latest comment
+
+            except Exception as e:
+                print(f"Skipping a comment due to error: {e}")
+
+        print("No previous comment found.")
+
+    except Exception as e:
+        print(f"Error deleting comment: {str(e)}")
+
+
+
+
 def main(): 
     day_count = get_day_count() # get and increment the day count
     comment_text = f'day {day_count} of asking sirnyges to hop on val :steambored: — SteamPester <3' # format comment
    
-    login(driver)
-    post_comment(driver, comment_text)
-
+    login(driver) # log in to Steam
+    driver.get(FRIEND_STEAM_PROFILE) # navigate to friend's profile
+    delete_previous_comment(driver) # delete previous comment
+    time.sleep(2)
+    post_comment(driver, comment_text) # post comment
+    
     time.sleep(5)
     driver.quit()
 
