@@ -41,9 +41,10 @@ make sure you have the following installed on your system:
 4. create a `.env` file in the project directory and add your Steam credentials and target profile:
 
    ```ini
-   STEAM_USERNAME="your_steam_username"
-   STEAM_PASSWORD="your_steam_password"
+   STEAM_USERNAME="your_Steam_username"
+   STEAM_PASSWORD="your_Steam_password"
    FRIEND_STEAM_PROFILE="https://steamcommunity.com/id/yourfriendsprofile"
+   FRIEND_STEAM_ID="your_friend's_Steam_id (long string of numbers)"
    ```
 
 5. modify the `comment_text` variable in `steampester.py` (line 89) to your liking  
